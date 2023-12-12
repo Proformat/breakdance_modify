@@ -10,8 +10,26 @@
 
 add_action('admin_init', 'modify_breakdance_plugin');
 
+define('BREAKDANCE_PLUGIN_DIR', ABSPATH . 'wp-content/plugins/breakdance/');
+
+function modifyFile($file_path, $search_text, $replace_text) {
+    if (file_exists($file_path)) {
+        $file_content = file_get_contents($file_path);
+        
+        if (strpos($file_content, $search_text) !== false) {
+            // Znalazło szukany tekst i zamieni go na nowy
+            $modified_content = str_replace($search_text, $replace_text, $file_content);
+            file_put_contents($file_path, $modified_content);
+            return true;
+        }
+        return false;
+    }
+    
+    return false;
+}
+
 function modify_breakdance_plugin() {
-    $file_path = ABSPATH . 'wp-content/plugins/breakdance/subplugins/breakdance-elements/elements/FormBuilder/ajax.php';
+    $file_path = BREAKDANCE_PLUGIN_DIR . 'subplugins/breakdance-elements/elements/FormBuilder/ajax.php';
     $search_text = 'return \Breakdance\Forms\handleSubmission(';
     $replace_text = 'return \Breakdance\Forms\handleSubmissionCustom(';
     $require_file = 'breakdance_form_modify.php';
