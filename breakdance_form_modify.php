@@ -32,18 +32,6 @@ function handleSubmissionCustom($postId, $formId, $fields)
     $breakdancePermissions = \Breakdance\Permissions\getUserPermission();
     $hasFullAccess = $breakdancePermissions && $breakdancePermissions['slug'] === 'full';
 
-    // Validate honeypot field
-    $csrfDisabled = $settings['advanced']['csrf_disabled'] ?? false;
-    if (!$csrfDisabled) {
-        if (!array_key_exists('csrfToken', $fields) || !is_string($fields['csrfToken']) || !wp_verify_nonce($fields['csrfToken'], get_nonce_key_for_ajax_requests())) {
-            return [
-                'type' => 'error',
-                'message' => $hasFullAccess ? 'Invalid CSRF token' : $errorMessage
-            ];
-        }
-        unset($fields['csrfToken']);
-    }
-
     // reCAPTCHA v3 challenge
     $recaptchaEnabled = $settings['advanced']['recaptcha']['enabled'] ?? false;
     if ($recaptchaEnabled) {
